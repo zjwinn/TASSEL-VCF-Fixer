@@ -147,14 +147,18 @@ cp $vcf ${PWD}/temp1.vcf.gz
 gunzip temp1.vcf.gz
 
 # Change id in temp1.vcf.gz if needed
-if ! grep -qFw "##contig=<ID=Chr" temp1.vcf; then
+if ! grep -q "##contig=<ID=Chr" temp1.vcf; then
 
+    echo "*** Warning: string '##contig=<ID=Chr' not found in header, attempting to fix..."
+    echo ""
     sed -i 's/##contig=<ID=/##contig=<ID=Chr/g' temp1.vcf
 
 fi
 
-if ! grep -qFw "UNKNOWN" temp1.vcf; then
+if grep -q "UNKNOWN" temp1.vcf; then
 
+    echo "*** Warning: string 'UNKNOWN' found in header, attempting to fix..."
+    echo ""
     sed -i 's/UNKNOWN/Unknown/g' temp1.vcf
 
 fi
