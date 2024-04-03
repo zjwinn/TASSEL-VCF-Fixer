@@ -30,7 +30,7 @@ usage() {
     echo -e "\t-n -name               The name of the new vcf.gz output."
     echo     
     echo "Examples:"
-    echo -e "\tbash $0 -vcf example.vcf.gz -ref example.fa -ram 10 -cores 4 -name fixed_example.vcf.gz"
+    echo -e "\tbash $0 -vcf example.vcf.gz -ref example.fa -name fixed_example.vcf.gz"
     echo
 }
 
@@ -146,9 +146,18 @@ cd ${PWD}/fixing_tassel_vcf_temp
 cp $vcf ${PWD}/temp1.vcf.gz
 gunzip temp1.vcf.gz
 
-# Change id in temp1.vcf.gz
-sed -i 's/##contig=<ID=/##contig=<ID=Chr/g' temp1.vcf
-sed -i 's/UNKNOWN/Unknown/g' temp1.vcf
+# Change id in temp1.vcf.gz if needed
+if ! grep -qFw "##contig=<ID=Chr" temp1.vcf; then
+
+    sed -i 's/##contig=<ID=/##contig=<ID=Chr/g' temp1.vcf
+
+fi
+
+if ! grep -qFw "UNKNOWN" temp1.vcf; then
+
+    sed -i 's/UNKNOWN/Unknown/g' temp1.vcf
+
+fi
 
 # Add Chr to each chromosome
 awk -v OFS='\t' '{ if ($1 !~ /^#/) $1 = "Chr" $1; print }' temp1.vcf > temp_file && mv temp_file temp1.vcf
