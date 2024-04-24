@@ -19,19 +19,17 @@ usage() {
     echo -e "\tThis script ensures that the VCF shares the same ref/alt information as the reference genome."
     echo
     echo "Options:"
-    echo -e "\t-h                Display this help message and exit."
+    echo -e "\t-h, --help               Display this help message and exit."
     echo
     echo "Arguments:"
-    echo -e "\t-v -vcf,               The VCF input (.vcf.gz file) file path. This must be the full length real path!"
-    echo
-    echo -e "\t-r -ref,               The reference sequence (.fa file) file path that you are checking against the VCF."
-    echo -e "\t                       This must be the full length real path!"
-    echo 
-    echo -e "\t-n -name               The name of the new vcf.gz output."
+    echo -e "\t-v, --vcf,               The VCF input (.vcf.gz file) file path. This must be the full length real path!"
+    echo -e "\t-r, --ref,               The reference sequence (.fa file) file path that you are checking against the VCF. This must be the full length real path!"
+    echo -e "\t-n, --name               The name of the new vcf.gz output."
     echo     
     echo "Examples:"
-    echo -e "\tbash $0 -vcf example.vcf.gz -ref example.fa -name fixed_example.vcf.gz"
+    echo -e "\tbash $0 -v 'example.vcf.gz' -r 'example.fa' -n 'fixed_example.vcf.gz'"
     echo
+    exit 1
 }
 
 # Initialize variables
@@ -43,32 +41,49 @@ name=""
 # Parse command-line options
 while getopts "v:r:n:h" opt; do
     case ${opt} in
-        v | vcf )
+        v | --vcf )
             vcf=$OPTARG
             ;;
-        r | ref )
+        r | --ref )
             refseq=$OPTARG
             ;;    
-        n | name )    
+        n | --name )    
             name=$OPTARG
             ;;
-        h | help )
+        h | --help )
             usage
-            exit 0
             ;;
         \? )
             echo "Invalid option: $OPTARG" 1>&2
             usage
-            exit 1
             ;;
         : )
             echo "Invalid option: $OPTARG requires an argument" 1>&2
             usage
-            exit 1
             ;;
     esac
 done
 shift $((OPTIND -1))
+
+# Check if vcf and refseq are provided
+if [ -z "$vcf" ] || [ -z "$refseq" ]; then
+    echo
+    echo "*** Error: Both VCF and reference sequence files are required! ***"
+    usage
+fi
+
+# Check if the files exist
+if [ ! -f "$vcf" ]; then
+    echo
+    echo "*** Error: VCF file '$vcf' not found! ***"
+    usage
+fi
+
+if [ ! -f "$refseq" ]; then
+    echo
+    echo "*** Error: Reference sequence '$refseq' not found! ***"
+    usage
+fi
 
 # Echo header
 echo 
@@ -88,26 +103,6 @@ echo "# WARNING: This program is not under warranty #"
 echo "#          Use at your own discretion!        #"
 echo "###############################################"
 echo
-
-# Check if vcf and refseq are provided
-if [ -z "$vcf" ] || [ -z "$refseq" ]; then
-    echo "*** Error: Both VCF and reference sequence files are required! ***"
-    usage
-    exit 1
-fi
-
-# Check if the files exist
-if [ ! -f "$vcf" ]; then
-    echo "*** Error: VCF file '$vcf' not found! ***"
-    usage
-    exit 1
-fi
-
-if [ ! -f "$refseq" ]; then
-    echo "*** Error: Reference sequence '$refseq' not found! ***"
-    usage
-    exit 1
-fi
 
 # Function to check if a string is a number
 is_number() {
