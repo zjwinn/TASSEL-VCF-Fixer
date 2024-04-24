@@ -181,7 +181,7 @@ echo "### Looping through and fixing ref/alt marker info..."
 echo 
 
 # Separate vcf header
-zcat temp1.vcf.gz | grep '^#' > header.txt
+zcat temp1.vcf.gz | grep --text '^#' > header.txt
 
 # Separate vcf body
 zcat temp1.vcf.gz | grep -v '^#' > body.txt
