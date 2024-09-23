@@ -139,27 +139,27 @@ mkdir fixing_tassel_vcf_temp
 # Write out temp file which has the chromsomes listed as chr1A, chr1B, etc
 cd ${PWD}/fixing_tassel_vcf_temp
 cp $vcf ${PWD}/temp1.vcf.gz
-gunzip temp1.vcf.gz
+# gunzip temp1.vcf.gz
 
 # Change id in temp1.vcf.gz if needed
-if ! grep -q "##contig=<ID=Chr" temp1.vcf; then
+# if ! grep -q "##contig=<ID=Chr" temp1.vcf; then
 
-    echo "*** Warning: string '##contig=<ID=Chr' not found in header, attempting to fix..."
-    echo ""
-    sed -i 's/##contig=<ID=/##contig=<ID=Chr/g' temp1.vcf
+#     echo "*** Warning: string '##contig=<ID=Chr' not found in header, attempting to fix..."
+#     echo ""
+#     sed -i 's/##contig=<ID=/##contig=<ID=Chr/g' temp1.vcf
 
-fi
+# fi
 
-if grep -q "UNKNOWN" temp1.vcf; then
+# if grep -q "UNKNOWN" temp1.vcf; then
 
-    echo "*** Warning: string 'UNKNOWN' found in header, attempting to fix..."
-    echo ""
-    sed -i 's/UNKNOWN/Unknown/g' temp1.vcf
+#     echo "*** Warning: string 'UNKNOWN' found in header, attempting to fix..."
+#     echo ""
+#     sed -i 's/UNKNOWN/Unknown/g' temp1.vcf
 
-fi
+# fi
 
 # Add Chr to each chromosome
-awk -v OFS='\t' '{ if ($1 !~ /^#/) $1 = "Chr" $1; print }' temp1.vcf > temp_file && mv temp_file temp1.vcf
+# awk -v OFS='\t' '{ if ($1 !~ /^#/) $1 = "Chr" $1; print }' temp1.vcf > temp_file && mv temp_file temp1.vcf
 
 # Make into GZ
 bgzip temp1.vcf
