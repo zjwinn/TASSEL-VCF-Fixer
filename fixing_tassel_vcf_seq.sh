@@ -162,7 +162,7 @@ cp $vcf ${PWD}/temp1.vcf.gz
 # awk -v OFS='\t' '{ if ($1 !~ /^#/) $1 = "Chr" $1; print }' temp1.vcf > temp_file && mv temp_file temp1.vcf
 
 # Make into GZ
-bgzip temp1.vcf
+# bgzip temp1.vcf
 
 # Print
 echo "### Pulling positions from sequences for the provided VCF..."
